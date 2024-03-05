@@ -14,7 +14,7 @@ html,body{
 /*Decorating Log In Window*/
 .log{
     width: 550px;
-    border-radius: 5px;
+    border-radius:5px;
     border: solid blue;
 }
 /*Decorating Header Box with PAC-Manager*/
