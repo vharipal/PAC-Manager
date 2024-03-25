@@ -6,8 +6,16 @@ app = Flask(__name__)
 
 #name and define function for each directory of website
 @app.route('/')
+def home():
+    return render_template('pachomepage.html')
+
+@app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+#TO DO:
+#display QR Code on page
+#delete QR Code after code is submitted
 
 @app.route('/login')
 def login():
@@ -27,29 +35,6 @@ def newvault():
         return render_template('vault.html')
     else: 
         return render_template("errorsignup.html")
-    
-'''
-@app.route('/login2', methods=['POST'])
-def login2():
-#To Do: Add case for if user already exists in Database
-#To Do: Verify valid email
-    email = request.form["email"].lower()
-    password1 = request.form["masterpass1"]
-    password2 = request.form["masterpass2"]
-    #check if user correctly entered password both times
-    if  password1 == password2:
-        insert_to_database(email, password1)
-        gen_OTP_account(email)
-        return render_template('OTP.html')
-    else: 
-        return render_template("errorsignup.html")
-
-@app.route('/newervault', methods=['POST'])
-def newvault():
-    OTP = request.form["OTP"]
-    if verify_OTP(OTP):
-        return render_template("vault.html")
-'''
 
 @app.route('/vault', methods=['POST'])
 def vault():
