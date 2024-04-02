@@ -4,12 +4,8 @@ def addtoVault(username, password, website, vault):
     if website in vault:
         vault[website] = (username, password)
         print(f"Login information for {website} updated successfully")
+        #Updates previously entered information
     else:
         vault[website] = (username, password)
         print(f"Login information for {website} has been added to the vault")
-
-#test
-vault1 = {}
-addtoVault("User", "pass", "website", vault1)
-addtoVault("user1", "pass1", "website1", vault1)
-print(vault1)
+        #Adds new information into the vault
