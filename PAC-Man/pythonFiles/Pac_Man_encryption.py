@@ -47,4 +47,5 @@ def decrypt_password(password_to_decrypt, hashed_master_password):
 
     plaintext = cipher.decrypt(ciphertext)
 
-    return plaintext
+    upassword = plaintext.decode()
+    return upassword
