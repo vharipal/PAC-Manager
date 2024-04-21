@@ -45,7 +45,6 @@ def decrypt_password(password_to_decrypt, hashed_master_password):
 
     cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
 
-    plaintext = cipher.decrypt(ciphertext)
+    plaintext = cipher.decrypt(ciphertext).decode()
 
-    upassword = plaintext.decode()
-    return upassword
+    return plaintext

@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, redirect, render_template, request, session
 from pythonFiles.OTP import gen_OTP_account, verify_OTP, deleteQR
 from pythonFiles.Database import insert_to_database, verify_user, getTOTP
 
 app = Flask(__name__)
 
-app.secret_key = 'BAD_SECRET_KEY'
+app.secret_key = 'PAC-MANAGER'
 
 #name and define function for each directory of website
 @app.route('/')
@@ -18,30 +18,6 @@ def signup():
 @app.route('/login')
 def login():
     return render_template('login.html')
-
-@app.route('/pacvault', methods=['POST'])
-def vault():
-    image = session.get('image', None)
-    email = session.get('email', None)
-    totp = getTOTP(str(email)) 
-    code = request.form["OTP"]
-
-    if verify_OTP(code, totp):
-        deleteQR(email)
-        return render_template("pacuserhomepage.html")
-    else:
-        return render_template('newOTP.html', image=image)
-    
-@app.route('/pacvault2', methods=['POST'])
-def vault2():
-    email = session.get('email', None)
-    totp = getTOTP(str(email)) 
-    code = request.form["OTP"]
-
-    if verify_OTP(code, totp):
-        return render_template("pacuserhomepage.html")
-    else:
-        return render_template('OTP.html')
 
 @app.route('/OTPnewuser', methods=['POST'])
 def newuserOTP():
@@ -77,8 +53,40 @@ def OTP():
     else:
        return render_template("errorlogin.html")
 
+@app.route('/new-user-sign-in', methods=['GET', 'POST'])
+def newsignin():
+    image = session.get('image', None)
+    email = session.get('email', None)
+    totp = getTOTP(str(email)) 
+    code = request.form["OTP"]
+
+    if verify_OTP(code, totp):
+        deleteQR(email)
+        return redirect ('/PAC-Vault')
+    else:
+        return render_template('newOTP.html', image=image)
+    
+@app.route('/user-sign-in', methods=['GET', 'POST'])
+def signin():
+    email = session.get('email', None)
+    totp = getTOTP(str(email)) 
+    code = request.form["OTP"]
+
+    if verify_OTP(code, totp):
+        return redirect('/PAC-Vault')
+    else:
+        return render_template('OTP.html')
+    
+@app.route('/PAC-Vault', methods=['GET', 'POST'])
+def pVault():
+    return render_template("pacuserhomepage.html")
+    
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    return render_template("pacprofile.html")
+
 if __name__ == "__main__":
     #To Do: find how to get a real SSL Cert
     #turn off debug when running with host = 0.0.0.0
-    app.run(ssl_context='adhoc', host='0.0.0.0')
-    #app.run(debug=True)
+    #app.run(ssl_context='adhoc', host='0.0.0.0')
+    app.run(debug=True)
