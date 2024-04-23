@@ -43,6 +43,7 @@ def OTP():
     password = request.form["masterpass"]
     #search databse for entry matching email/pass credential
     valid = verify_user(email, password)
+    session['email'] = email
     #if SQL Query finds a math valid = true
     if valid:
         try:
