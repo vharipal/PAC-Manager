@@ -1,7 +1,12 @@
 import psycopg2
 from pythonFiles.Pac_Man_encryption import hash_master_password, generate_salt, verify_hash_password
+import re 
 
 def insert_to_database(email, password):
+    #check if email is valid
+    if not valid_email(email):
+        print("Invalid email address! Please enter a valid email address.")
+        return  #exit the function if email is invalid
     conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
     cur = conn.cursor()
     #generate salt to use for hashing
@@ -73,4 +78,11 @@ def updateCredentials(email, accountid, url, username, password):
     cur.close()
     conn.close()
     return
-
+def valid_email(email):
+    #regex pattern to validate email address
+    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+    #check if email matches the pattern
+    if re.match(pattern, email):
+        return True
+    else:
+        return False
