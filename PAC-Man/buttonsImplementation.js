@@ -68,7 +68,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({}) // You may not need to send any data for password generation
+            body: JSON.stringify({}) //Might not need
         })
         .then(response => response.json())
         .then(data => console.log(data));
