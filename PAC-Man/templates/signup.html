@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+    <div class="log">
+        <div class="title"><span>PAC-Manager</span></div>
+        <form action="/OTPnewuser" method="post">
+            <div class="row">
+                <img src="/static/Cherry.PNG"
+                    width="20"
+                    height="20">
+                <input name="email" type="text" placeholder="Email" required>
+            </div>
+            <div class="row">
+                <img src="/static/Key.PNG"
+                    width="20"
+                    height="20">
+                <input name="masterpass1" type="password" placeholder="Master Password" required>
+            </div>
+            <div class="row">
+                <img src="/static/Key.PNG"
+                    width="20"
+                    height="20">
+                <input name="masterpass2" type="password" placeholder="Confirm Master Password" required>
+            </div>
+            <div class="row button">
+                <input type="submit" value="Sign Up">
+            </div>
+            <div class="signup" style="color: white;">Already have an account? <a href="/login">Log In</a></div>
+        </form>
+    </div>
+</body>
+</html>
