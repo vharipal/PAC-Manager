@@ -2,10 +2,6 @@ import psycopg2, re
 from pythonFiles.Pac_Man_encryption import hash_master_password, generate_salt, verify_hash_password
 
 def insert_to_database(email, password):
-    #check if email is valid
-    if not valid_email(email):
-        print("Invalid email address! Please enter a valid email address.")
-        return  #exit the function if email is invalid
     conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     #generate salt to use for hashing
