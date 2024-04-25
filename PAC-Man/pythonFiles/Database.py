@@ -1,13 +1,12 @@
-import psycopg2
+import psycopg2, re
 from pythonFiles.Pac_Man_encryption import hash_master_password, generate_salt, verify_hash_password
-import re 
 
 def insert_to_database(email, password):
     #check if email is valid
     if not valid_email(email):
         print("Invalid email address! Please enter a valid email address.")
         return  #exit the function if email is invalid
-    conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
+    conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     #generate salt to use for hashing
     salt = generate_salt()
@@ -17,7 +16,7 @@ def insert_to_database(email, password):
     conn.close()
 
 def insert_otp(email, otp):
-    conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
+    conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     cur.execute("UPDATE pacusers SET otpkey = %s WHERE email = %s;", (otp, email))
     conn.commit()
@@ -25,7 +24,7 @@ def insert_otp(email, otp):
     conn.close()
 
 def verify_user(email, password):
-    conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
+    conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     #find hashed password matching email for verification
     cur.execute("SELECT masterpass FROM pacusers WHERE email = %s;",[email])
@@ -36,7 +35,7 @@ def verify_user(email, password):
     return valid
 
 def getTOTP(email):
-    conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
+    conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     #find OTPkey
     cur.execute("SELECT otpkey FROM pacusers WHERE email = %s;",[email])
@@ -47,7 +46,7 @@ def getTOTP(email):
     return totp
 
 def addCredentials(email, url, username, password, name):
-    conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
+    conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     cur.execute("SELECT masterpass, salt FROM pacusers WHERE email = %s;",[email])
     res = cur.fetchall()
@@ -59,7 +58,7 @@ def addCredentials(email, url, username, password, name):
     return 
 
 def getCredentials(email, accountid):
-    conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
+    conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     cur.execute("SELECT url, username, password , name FROM pacvault WHERE email = %s AND accountid = %s;",(email, accountid))
     res = cur.fetchall()
@@ -68,7 +67,7 @@ def getCredentials(email, accountid):
     return res[0]
 
 def updateCredentials(email, accountid, url, username, password):
-    conn = psycopg2.connect("dbname=pacmanager user=postgres password=goodyear")
+    conn = psycopg2.connect("dbname=postgres user=postgres password=goodyear host=pacmanager.c9o2e2iucr6i.us-east-1.rds.amazonaws.com port=5432")
     cur = conn.cursor()
     cur.execute("SELECT masterpass, salt FROM pacusers WHERE email = %s;",[email])
     res = cur.fetchall()
@@ -78,6 +77,7 @@ def updateCredentials(email, accountid, url, username, password):
     cur.close()
     conn.close()
     return
+
 def valid_email(email):
     #regex pattern to validate email address
     pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
