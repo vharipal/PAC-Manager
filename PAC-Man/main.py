@@ -1,5 +1,4 @@
 #import tkinter
-from tkinter import messagebox
 from flask import Flask, redirect, render_template, request, session
 from pythonFiles.OTP import gen_OTP_account, verify_OTP, deleteQR
 from pythonFiles.Database import insert_to_database, verify_user, getTOTP, valid_email
@@ -8,9 +7,7 @@ from pythonFiles.strengthchecking import password_check
 app = Flask(__name__)
 
 app.secret_key = 'PAC-MANAGER'
-# This code is to hide the main tkinter window
-#root = tkinter.Tk()
-#root.withdraw()
+
 #name and define function for each directory of website
 @app.route('/')
 def home():
@@ -19,6 +16,11 @@ def home():
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+@app.route('/signup-retry', methods=['GET', 'POST'])
+def retrySignup():
+    error_message = session.get('error_message', None)
+    return render_template("errorsignup.html", error_message=error_message)
 
 @app.route('/login')
 def login():
@@ -32,14 +34,15 @@ def newuserOTP():
     password2 = request.form["masterpass2"]
     #check if email is valid
     if not valid_email(email):
-        return redirect('/signup')
+        session['error_message'] = "Email is not valid" 
+        return redirect('/signup-retry')
     #check if user correctly entered password both times
     if  password1 == password2:
         pstrength = password_check(password1)
+        print(password1)
         if pstrength < 5:
-            error_message = "Weak password,Have:8 characters,1 uppercase,1 lowercase,1 digit,1 special character"
-            return render_template("errorsignup.html", error_message=error_message)
-           # return messagebox.showerror("error:", "Weak password, required_criteria: 8 characters or more, at least one uppercase letter, at least one lowercase letter, at least one digit, at least one special character")
+            session['error_message'] = "Weak password, Have: 8 characters, 1 uppercase, 1 lowercase, 1 digit, 1 special character"
+            return redirect('/signup-retry')
         else:
             insert_to_database(email, password1)
             gen_OTP_account(email)
@@ -48,8 +51,8 @@ def newuserOTP():
             session['email'] = email
             return render_template('newOTP.html', image=image)
     else:
-        error_message = "Passwords do not match" 
-        return render_template("errorsignup.html", error_message=error_message)
+        session['error_message'] = "Passwords do not match" 
+        return redirect('/signup-retry')
 
 @app.route('/OTP', methods=['POST'])
 def OTP():

@@ -122,8 +122,8 @@
 			border-radius: 10px;
             cursor: pointer;
             font-family: georgia;
-            font-size: 16px;
-            width: 30%;
+            font-size: 25px;
+            width: 100%;
             text-align: center;
         }
 
@@ -133,7 +133,7 @@
             position: absolute;
 			border-radius: 10px;
             background-color: darkgoldenrod;
-            width: 85%;
+            width: 100%;
             box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
             z-index: 1;
         }
@@ -141,12 +141,12 @@
         /* Style for dropdown options */
         .dropdown-content input {
             display: block;
-            width: 93%;
+            width: 97%;
 			border-radius: 10px;
             padding: 10px;
             border: none;
             border-bottom: 1px solid #ddd;
-            background-color: gold;
+            background-color: lightgray;
             color: black;
         }
         
@@ -180,14 +180,14 @@
             <div class="dropdown">
                 <button onclick="toggleDropdown()">Name</button>
                 <div id="dropdownOptions" class="dropdown-content">
-                    <input type="text" placeholder="URL" disabled>
-                    <input type="text" placeholder="Username" disabled>
-                    <input type="text" placeholder="Password" disabled>
-                    <button class="save-button" onclick="saveCredentials()">Save</button> 
-                    <button onclick="toggleEditMode()">Edit</button>
-                    <button class="delete-button">Delete</button>
-                    <button class="strength-checker-button" onclick="checkStrength()">Strength Checker</button>
-                    <button class="generate-button" onclick="generatePassword()">Generate</button> <!-- Add generate button -->
+                    <input id="inputDropdownOptions" type="text" placeholder="URL" disabled>
+                    <input id="inputDropdownOptions" type="text" placeholder="Username" disabled>
+                    <input id="inputDropdownOptions" type="text" placeholder="Password" disabled>
+                    <button class="save-button" onclick="saveCredentials()" style="width: 18%; font-size: 18px;">Save</button> 
+                    <button onclick="toggleEditMode()" style="width: 18%; font-size: 18px;">Edit</button>
+                    <button class="delete-button" style="width: 18%; font-size: 18px;">Delete</button>
+                    <button class="strength-checker-button" onclick="checkStrength()" style="width: 25%; font-size: 18px;">Strength Checker</button>
+                    <button class="generate-button" onclick="generatePassword()" style="width: 18%; font-size: 18px;">Generate</button> <!-- Add generate button -->
                 </div>
             </div>
             <div class="dropdown">
@@ -196,11 +196,11 @@
                     <input type="text" placeholder="URL" disabled>
                     <input type="text" placeholder="Username" disabled>
                     <input type="text" placeholder="Password" disabled>
-                    <button class="save-button" onclick="savePlusCredentials()">Save</button> 
-                    <button onclick="togglePlusEditMode()">Edit</button>
-                    <button class="delete-button">Delete</button>
-                    <button class="strength-checker-button" onclick="checkPlusStrength()">Strength Checker</button>
-                    <button class="generate-button" onclick="generatePlusPassword()">Generate</button> <!-- Add generate button -->
+                    <button class="save-button" onclick="savePlusCredentials()" style="width: 18%; font-size: 18px;">Save</button> 
+                    <button onclick="togglePlusEditMode()" style="width: 18%; font-size: 18px;">Edit</button>
+                    <button class="delete-button" style="width: 18%; font-size: 18px;">Delete</button>
+                    <button class="strength-checker-button" onclick="checkPlusStrength()" style="width: 25%; font-size: 18px;">Strength Checker</button>
+                    <button class="generate-button" onclick="generatePlusPassword()" style="width: 18%; font-size: 18px;">Generate</button> <!-- Add generate button -->
                 </div>
             </div>
             <img src="/static/lockicon.png" style="display: block; margin: 0 auto; height: 300px; width: 300px;">
@@ -214,15 +214,22 @@
         var dropdownContent = document.getElementById("dropdownOptions");
         dropdownContent.style.display === "none" ? dropdownContent.style.display = "block" : dropdownContent.style.display = "none";
     }   
-
+    
     // Function to toggle edit mode
+    var editModeActive = false;
     function toggleEditMode() {
         var dropdownButton = document.querySelector(".dropdown button");
         var inputs = document.querySelectorAll(".dropdown-content input");
         dropdownButton.classList.toggle("edit-mode");
         inputs.forEach(function(input) {
             input.disabled = !input.disabled;
+            if (editModeActive) {
+            input.style.backgroundColor = "lightgray"; // Reset to default background color
+            } else {
+            input.style.backgroundColor = "gold"; // Set background color on first click
+            }
         });
+        editModeActive = !editModeActive;
     }
 
     // Function to save credentials
@@ -247,12 +254,14 @@
         alert("Checking password strength...");
     }
 
+    //GARBAGE PAST THIS
+
     // Function to toggle dropdown visibility for plus button
     function togglePlusDropdown() {
         var dropdownContent = document.getElementById("plusDropdownOptions");
         dropdownContent.style.display === "none" ? dropdownContent.style.display = "block" : dropdownContent.style.display = "none";
     }
-
+    
     // Function to toggle edit mode for plus button
     function togglePlusEditMode() {
         var dropdownButton = document.querySelectorAll(".dropdown button")[1];
