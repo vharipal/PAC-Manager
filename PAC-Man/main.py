@@ -1,11 +1,16 @@
+#import tkinter
+from tkinter import messagebox
 from flask import Flask, redirect, render_template, request, session
 from pythonFiles.OTP import gen_OTP_account, verify_OTP, deleteQR
 from pythonFiles.Database import insert_to_database, verify_user, getTOTP, valid_email
+from pythonFiles.strengthchecking import password_check
 
 app = Flask(__name__)
 
 app.secret_key = 'PAC-MANAGER'
-
+# This code is to hide the main tkinter window
+#root = tkinter.Tk()
+#root.withdraw()
 #name and define function for each directory of website
 @app.route('/')
 def home():
@@ -30,14 +35,21 @@ def newuserOTP():
         return redirect('/signup')
     #check if user correctly entered password both times
     if  password1 == password2:
-        insert_to_database(email, password1)
-        gen_OTP_account(email)
-        image = "static/" + email + ".png"
-        session['image'] = image
-        session['email'] = email
-        return render_template('newOTP.html', image=image)
-    else: 
-        return render_template("errorsignup.html")
+        pstrength = password_check(password1)
+        if pstrength < 5:
+            error_message = "Weak password,Have:8 characters,1 uppercase,1 lowercase,1 digit,1 special character"
+            return render_template("errorsignup.html", error_message=error_message)
+           # return messagebox.showerror("error:", "Weak password, required_criteria: 8 characters or more, at least one uppercase letter, at least one lowercase letter, at least one digit, at least one special character")
+        else:
+            insert_to_database(email, password1)
+            gen_OTP_account(email)
+            image = "static/" + email + ".png"
+            session['image'] = image
+            session['email'] = email
+            return render_template('newOTP.html', image=image)
+    else:
+        error_message = "Passwords do not match" 
+        return render_template("errorsignup.html", error_message=error_message)
 
 @app.route('/OTP', methods=['POST'])
 def OTP():
@@ -91,5 +103,5 @@ def profile():
 if __name__ == "__main__":
     #To Do: find how to get a real SSL Cert
     #turn off debug when running with host = 0.0.0.0
-    app.run(ssl_context='adhoc', host='0.0.0.0')
-    #app.run(debug=True)
+    #app.run(ssl_context='adhoc', host='0.0.0.0')
+    app.run(debug=True)
