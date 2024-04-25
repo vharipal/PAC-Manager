@@ -1,6 +1,6 @@
 from flask import Flask, redirect, render_template, request, session
 from pythonFiles.OTP import gen_OTP_account, verify_OTP, deleteQR
-from pythonFiles.Database import insert_to_database, verify_user, getTOTP
+from pythonFiles.Database import insert_to_database, verify_user, getTOTP, valid_email
 
 app = Flask(__name__)
 
@@ -22,10 +22,12 @@ def login():
 @app.route('/OTPnewuser', methods=['POST'])
 def newuserOTP():
 #To Do: Add case for if user already exists in Database
-#To Do: Verify valid email
     email = request.form["email"].lower()
     password1 = request.form["masterpass1"]
     password2 = request.form["masterpass2"]
+    #check if email is valid
+    if not valid_email(email):
+        return redirect('/signup')
     #check if user correctly entered password both times
     if  password1 == password2:
         insert_to_database(email, password1)
@@ -67,7 +69,7 @@ def newsignin():
     else:
         return render_template('newOTP.html', image=image)
     
-@app.route('/user-sign-in', methods=['GET', 'POST'])
+@app.route('/user-sign-in', methods=['POST'])
 def signin():
     email = session.get('email', None)
     totp = getTOTP(str(email)) 
@@ -89,5 +91,5 @@ def profile():
 if __name__ == "__main__":
     #To Do: find how to get a real SSL Cert
     #turn off debug when running with host = 0.0.0.0
-    #app.run(ssl_context='adhoc', host='0.0.0.0')
-    app.run(debug=True)
+    app.run(ssl_context='adhoc', host='0.0.0.0')
+    #app.run(debug=True)
